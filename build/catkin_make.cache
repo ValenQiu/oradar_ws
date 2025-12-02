@@ -1,2 +1,0 @@
-auto_wheelchair:beginner_tutorials:laser_test:oradar_ros:yahboomcar_laser
--DCATKIN_DEVEL_PREFIX=/home/valenqiu/oradar_ws/devel -DCMAKE_INSTALL_PREFIX=/home/valenqiu/oradar_ws/install -G Unix Makefiles
