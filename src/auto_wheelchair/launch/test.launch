@@ -1,0 +1,61 @@
+<launch>
+    <!-- Launch the base.launch file -->
+    <include file="$(find oradar_lidar)/launch/laser_scan.launch"/>
+    <!-- 启动激光雷达避障节点 -->
+    <!-- Activate lidar obstacle avoidance node -->
+    <node name='laser_data_processor_1' pkg="auto_wheelchair" type="lidar.py" required="true" output="screen">
+
+        <param name="detect_angle_min" type="int"   value="120"/>		<!--Minimum Detect Angle-->
+        <param name="detect_angle_max" type="int"   value="225"/>		<!--Maximum Detect Angle-->
+        <param name="coordinate_360_degree"  value="True"/>			            <!--True if using 360 Coordinate, otherwise use 0~180 & 0~-180 coordinate-->
+        <param name="ResponseDist_max" type="double"   value="1.5"/>	<!--Maximum Detect Distance-->
+        <param name="ResponseDist_min" type="double"   value="0.15"/>	<!--Minimum Detect Distance-->
+        <param name="topic_subscribed" value="/scan1"/>				    <!--ROS Topic Subscribed-->
+        <param name="topic_published"  value="/object1"/>				<!--ROS Topic Published-->
+        <param name="frame_id"  value="laser1"/>			            <!--Frame ID-->
+    
+    </node>
+
+    <!-- Start a node that publishes a static transform -->
+    <node pkg="tf" type="static_transform_publisher" name="base_to_laser1" output="screen"
+          args="0.40 0.13 0 0 3.14 0  base laser1 10"/>
+
+    <node name='laser_data_processor_2' pkg="auto_wheelchair" type="lidar.py" required="true" output="screen">
+
+        <param name="detect_angle_min" type="int"   value="155"/>		<!--Minimum Detect Angle-->
+        <param name="detect_angle_max" type="int"   value="250"/>		<!--Maximum Detect Angle-->
+        <param name="coordinate_360_degree"  value="True"/>			            <!--True if using 360 Coordinate, otherwise use 0~180 & 0~-180 coordinate-->
+        <param name="ResponseDist_max" type="double"   value="1.5"/>	<!--Maximum Detect Distance-->
+        <param name="ResponseDist_min" type="double"   value="0.15"/>	<!--Minimum Detect Distance-->
+        <param name="topic_subscribed" value="/scan2"/>				    <!--ROS Topic Subscribed-->
+        <param name="topic_published" value="/object2"/>				<!--ROS Topic Published-->
+        <param name="frame_id"  value="laser2"/>			            <!--Frame ID-->
+    
+    </node>
+
+    <!-- Start a node that publishes a static transform -->
+    <node pkg="tf" type="static_transform_publisher" name="base_to_laser2" output="screen"
+          args="0.40 -0.13 0 0 3.14 0 base laser2 10"/>
+
+    <node name='laser_data_processor_3' pkg="auto_wheelchair" type="lidar.py" required="true" output="screen">
+
+        <param name="detect_angle_min" type="int"   value="-70"/>		<!--Minimum Detect Angle-->
+        <param name="detect_angle_max" type="int"   value="70"/>		<!--Maximum Detect Angle-->
+        <param name="ResponseDist_max" type="double"   value="1.5"/>	<!--Maximum Detect Distance-->
+        <param name="ResponseDist_min" type="double"   value="0.15"/>	<!--Minimum Detect Distance-->
+        <param name="topic_subscribed" value="/scan3"/>				    <!--ROS Topic Subscribed-->
+        <param name="topic_published" value="/object3"/>				<!--ROS Topic Published-->
+        <param name="frame_id"  value="laser3"/>			            <!--Frame ID-->
+            
+    </node>
+
+    <!-- Start a node that publishes a static transform -->
+    <node pkg="tf" type="static_transform_publisher" name="base_to_laser3" output="screen"
+          args="-0.4 0 0 0 3.14 0 base laser3 10"/>
+
+    <!-- <node name="motion_control" pkg="auto_wheelchair" type="motion_control.py" output="screen" />
+
+    <node name="controller" pkg="auto_wheelchair" type="controller.py" output="screen" /> -->
+
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find auto_wheelchair)/rviz/viewer.rviz" />
+</launch>

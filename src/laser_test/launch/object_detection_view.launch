@@ -1,0 +1,47 @@
+<launch>
+    <!-- Launch the base.launch file -->
+    <include file="$(find laser_test)/launch/laser_scan_with_filter.launch"/>
+
+    <!-- Activate lidar object detection nodev of lidar 1 -->
+    <node name='object_detection_1' pkg="laser_test" type="object_detection.py" required="true" output="screen">
+
+        <param name="topic_subscribed" value="/filtered1"/>			<!--ROS Topic Subscribed-->
+        <param name="topic_published"  value="/object1"/>			<!--ROS Topic Published-->
+        <param name="frame_id"  value="laser1"/>			        <!--Frame ID-->
+
+    </node>
+
+    <!-- Start a node that publishes a static transform -->
+    <node pkg="tf" type="static_transform_publisher" name="base_to_laser1" output="screen"
+          args="0.26 0.2325 0 0 0 0 base laser1 10"/>
+
+    <!-- Activate lidar object detection nodev of lidar 2 -->
+    <node name='object_detection_2' pkg="laser_test" type="object_detection.py" required="true" output="screen">
+
+        <param name="topic_subscribed" value="/filtered2"/>			<!--ROS Topic Subscribed-->
+        <param name="topic_published"  value="/object2"/>			<!--ROS Topic Published-->
+        <param name="frame_id"  value="laser2"/>			        <!--Frame ID-->
+    
+    </node>
+
+    <!-- Start a node that publishes a static transform -->
+    <node pkg="tf" type="static_transform_publisher" name="base_to_laser2" output="screen"
+          args="0.26 -0.2325 0 0 0 0 base laser2 10"/>
+
+    <!-- Activate lidar object detection nodev of lidar 3 -->
+    <node name='object_detection_3' pkg="laser_test" type="object_detection.py" required="true" output="screen">
+
+        <param name="topic_subscribed" value="/filtered3"/>			<!--ROS Topic Subscribed-->
+        <param name="topic_published"  value="/object3"/>			<!--ROS Topic Published-->
+        <param name="frame_id"  value="laser3"/>			        <!--Frame ID-->
+    
+    </node>
+
+    <!-- Start a node that publishes a static transform -->
+    <node pkg="tf" type="static_transform_publisher" name="base_to_laser3" output="screen"
+          args="-0.3 0 0 0 0 0 base laser3 10"/>
+    
+    <!-- Start a node that publishes a static transform -->
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find laser_test)/rviz/objection_detection_view.rviz" />
+
+</launch>

@@ -1,0 +1,1 @@
+/usr/bin/cc -O3 -DNDEBUG   CMakeFiles/blocking_c_api_test.dir/blocking_c_api_test.c.o  -o ../../devel/lib/oradar_lidar/blocking_c_api_test -Wl,-rpath,/home/valenqiu/catkin_ws/src/oradar_ros/build/devel/lib: ../../devel/lib/liboradar_sdk.so -lstdc++ -lm -lpthread -lrt 

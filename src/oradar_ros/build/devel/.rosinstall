@@ -1,0 +1,2 @@
+- setup-file:
+    local-name: /home/valenqiu/catkin_ws/src/oradar_ros/build/devel/setup.sh
