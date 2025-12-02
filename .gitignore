@@ -1,0 +1,34 @@
+# Ignore build and devel spaces produced by catkin
+build/
+devel/
+install/
+
+# Ignore catkin workspace file
+.catkin_workspace
+
+# Ignore generated workspace/cmake files
+/CMakeFiles/
+/CMakeCache.txt
+
+# Python
+__pycache__/
+*.py[cod]
+*.so
+
+# Editor files
+.vscode/
+.idea/
+*.swp
+
+# ROS/bags and local logs (keep locally)
+rosbag/
+*.bag
+
+# Local setup/env files
+env.sh
+local_setup.*
+setup.*
+
+# OS files
+.DS_Store
+thumbs.db
