@@ -44,9 +44,9 @@ class Controller:
         self.tf_listener = tf.TransformListener()
         self.frame_id = rospy.get_param('~frame_id', 'base')
         # Subscriber to the original laser scan topic
-        self.subscriber_1 = rospy.Subscriber(self.topic_subscribed_1, PoseStamped, self.pose_callback)
-        self.subscriber_2 = rospy.Subscriber(self.topic_subscribed_2, PoseStamped, self.pose_callback)
-        self.subscriber_3 = rospy.Subscriber(self.topic_subscribed_3, PoseStamped, self.pose_callback)
+        self.subscriber_1 = rospy.Subscriber(self.topic_subscribed_1, PoseStamped, self.pose_callback, queue_size=1)
+        self.subscriber_2 = rospy.Subscriber(self.topic_subscribed_2, PoseStamped, self.pose_callback, queue_size=1)
+        self.subscriber_3 = rospy.Subscriber(self.topic_subscribed_3, PoseStamped, self.pose_callback, queue_size=1)
 
         # Publisher for the filtered laser scan topic
         self.publisher = rospy.Publisher(self.topic_published, Twist, queue_size=1)
