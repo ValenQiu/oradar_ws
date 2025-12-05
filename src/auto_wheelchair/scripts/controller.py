@@ -12,7 +12,7 @@ class Controller:
         
         self.controller = MoveBase()
         self.topic_subscribed = rospy.get_param('~topic_subscribed', '/motion')
-        self.subscriber = rospy.Subscriber(self.topic_subscribed, Twist, self.controller_callback)
+        self.subscriber = rospy.Subscriber(self.topic_subscribed, Twist, self.controller_callback, queue_size=1)
         
     def controller_callback(self, msg):
         linear_speed = msg.linear.x
