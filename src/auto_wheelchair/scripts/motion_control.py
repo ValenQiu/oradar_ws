@@ -5,6 +5,7 @@ import rospy
 import tf
 import numpy as np
 from sensor_msgs.msg import LaserScan
+from std_msgs.msg import Bool
 from geometry_msgs.msg import PoseStamped, Twist
 from visualization_msgs.msg import Marker
 import math
@@ -18,6 +19,7 @@ class Controller:
         # Initialize the node
         rospy.init_node('object_detection', anonymous=True)
         self.rate = rospy.Rate(5)
+        self.remote_control_enabled = False
 
         self.RAD2DEG = 180 / math.pi
         self.DEG2RAD = math.pi / 180
@@ -43,14 +45,22 @@ class Controller:
         self.topic_published = rospy.get_param('~topic_published', '/motion')
         self.tf_listener = tf.TransformListener()
         self.frame_id = rospy.get_param('~frame_id', 'base')
+        # Subscribe to the remote control enabled
+        self.remote_control_subsciiber = rospy.Subscriber('/remote_control_enabled', Bool, self.update_remote_control_state, queue_size=1)
         # Subscriber to the original laser scan topic
-        self.subscriber_1 = rospy.Subscriber(self.topic_subscribed_1, PoseStamped, self.pose_callback)
-        self.subscriber_2 = rospy.Subscriber(self.topic_subscribed_2, PoseStamped, self.pose_callback)
-        self.subscriber_3 = rospy.Subscriber(self.topic_subscribed_3, PoseStamped, self.pose_callback)
+        self.subscriber_1 = rospy.Subscriber(self.topic_subscribed_1, PoseStamped, self.pose_callback, queue_size=1)
+        self.subscriber_2 = rospy.Subscriber(self.topic_subscribed_2, PoseStamped, self.pose_callback, queue_size=1)
+        self.subscriber_3 = rospy.Subscriber(self.topic_subscribed_3, PoseStamped, self.pose_callback, queue_size=1)
 
         # Publisher for the filtered laser scan topic
         self.publisher = rospy.Publisher(self.topic_published, Twist, queue_size=1)
 
+    def update_remote_control_state(self, msg):
+        remote_control_flag = msg.data
+        # print(remote_control_flag)
+        self.remote_control_enabled = True if remote_control_flag else False
+        rospy.logwarn("remote control enabled: %s",self.remote_control_enabled)
+    
     def cal_dist(self, x, y):
         dist = math.sqrt(x**2 + y**2)
         return dist
@@ -58,6 +68,7 @@ class Controller:
     def pose_callback(self, msg):
         frame_id = msg.header.frame_id
         pose = msg.pose.position
+        rospy.loginfo("received pose!")
 
         if frame_id == 'laser1':
             self.poses[0] = pose
@@ -145,7 +156,6 @@ class Controller:
         y = self.trans_poses[index][1]
         angle = math.atan2(y, x) * self.RAD2DEG
         
-        
         self.pack_message(dist_min, angle)
         
     def pack_message(self, dist, angle):
@@ -228,7 +238,7 @@ class Controller:
                     motion.linear.x = linear_speed
                     motion.angular.z = angular_speed
                     self.publisher.publish(motion)
-                    rospy.loginfo(self.stop_motion_count)
+                    # rospy.loginfo(self.stop_motion_count)
                     rospy.sleep(2)
                     self.backward_flag = True
         # reverse the motion
@@ -299,17 +309,21 @@ class Controller:
                     motion.linear.x = linear_speed
                     motion.angular.z = angular_speed
                     self.publisher.publish(motion)
-                    rospy.loginfo(self.stop_motion_count)
+                    # rospy.loginfo(self.stop_motion_count)
                     rospy.sleep(2)
                     self.backward_flag = False      
             # self.stop_motion_flag = False
-        rospy.loginfo('backward flag: %s', self.backward_flag)
+        # rospy.loginfo('backward flag: %s', self.backward_flag)
         rospy.logwarn('published message: %s', motion)
     
     
     def run(self):
         while not rospy.is_shutdown():
-            self.process_data()
+            if self.remote_control_enabled:
+                rospy.logwarn("Remote Control Enabled")
+            else:
+                self.process_data()
+            # self.process_data()
             
             self.rate.sleep()
         
